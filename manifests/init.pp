@@ -13,7 +13,7 @@ class pe_activemq_jolokia {
     mode   => '0600',
   }
 
-  file {'/etc/puppetlabs/activemq/jetty.xml':
+  File <| title == '/etc/puppetlabs/activemq/jetty.xml' |> {
     ensure => file,
     source => 'puppet:///modules/pe_activemq_jolokia/jetty.xml',
     notify => Service['pe-activemq'],
