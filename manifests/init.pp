@@ -7,38 +7,31 @@
 #   curl -u admin:admin http://127.0.0.1:8161/api/jolokia/version
 class pe_activemq_jolokia {
 
+  # Use an updated jetty.xml source that enables Jolokia
+  File <| title == '/etc/puppetlabs/activemq/jetty.xml' |> {
+    source => 'puppet:///modules/pe_activemq_jolokia/jetty.xml',
+  }
+
+  # Set up the additional configuration files Jolokia needs
   File {
+    ensure => file,
     owner  => 'pe-activemq',
     group  => 'pe-activemq',
     mode   => '0600',
-  }
-
-  File <| title == '/etc/puppetlabs/activemq/jetty.xml' |> {
-    ensure => file,
-    source => 'puppet:///modules/pe_activemq_jolokia/jetty.xml',
     notify => Service['pe-activemq'],
   }
 
-  file {'/etc/puppetlabs/activemq/jetty-realm.properties':
-    ensure => file,
-  }
-
-  file {'/etc/puppetlabs/activemq/jolokia-access.xml':
-    ensure => file,
+  file { '/etc/puppetlabs/activemq/jolokia-access.xml':
     source => 'puppet:///modules/pe_activemq_jolokia/jolokia-access.xml',
-    notify => Service['pe-activemq'],
   }
 
-  file {'/opt/puppetlabs/server/apps/activemq/webapps/api':
+  file { [ '/opt/puppetlabs/server/apps/activemq/webapps/api',
+           '/opt/puppetlabs/server/apps/activemq/webapps/api/WEB-INF' ]:
     ensure => directory,
-  } ->
-  file {'/opt/puppetlabs/server/apps/activemq/webapps/api/WEB-INF':
-    ensure => directory,
-  } ->
-  file {'/opt/puppetlabs/server/apps/activemq/webapps/api/WEB-INF/web.xml':
-    ensure => file,
+  }
+
+  file { '/opt/puppetlabs/server/apps/activemq/webapps/api/WEB-INF/web.xml':
     source => 'puppet:///modules/pe_activemq_jolokia/web.xml',
-    notify => Service['pe-activemq'],
   }
 
 }
