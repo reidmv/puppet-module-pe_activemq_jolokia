@@ -7,11 +7,6 @@
 #   curl -u admin:admin http://127.0.0.1:8161/api/jolokia/version
 class pe_activemq_jolokia {
 
-  # Use an updated jetty.xml source that enables Jolokia
-  File <| title == '/etc/puppetlabs/activemq/jetty.xml' |> {
-    source => 'puppet:///modules/pe_activemq_jolokia/jetty.xml',
-  }
-
   # Set up the additional configuration files Jolokia needs
   File {
     ensure => file,
@@ -20,6 +15,18 @@ class pe_activemq_jolokia {
     mode   => '0600',
     notify => Service['pe-activemq'],
   }
+
+  # Use an updated jetty.xml source that enables Jolokia
+  if (versioncmp($::facts['pe_server_version'], '2016.5.0') < 0) {
+    file {'/etc/puppetlabs/activemq/jetty.xml':
+      source => 'puppet:///modules/pe_activemq_jolokia/jetty.xml',
+    }
+  } else {
+    File <| title == '/etc/puppetlabs/activemq/jetty.xml' |> {
+      source => 'puppet:///modules/pe_activemq_jolokia/jetty.xml',
+    }
+  }
+
 
   file { '/etc/puppetlabs/activemq/jolokia-access.xml':
     source => 'puppet:///modules/pe_activemq_jolokia/jolokia-access.xml',
