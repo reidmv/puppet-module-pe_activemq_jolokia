@@ -21,6 +21,10 @@ class pe_activemq_jolokia {
     file {'/etc/puppetlabs/activemq/jetty.xml':
       source => 'puppet:///modules/pe_activemq_jolokia/jetty.xml',
     }
+
+    file {'/etc/puppetlabs/activemq/jetty-realm.properties':
+      mode => '0600',
+    }
   } else {
     File <| title == '/etc/puppetlabs/activemq/jetty.xml' |> {
       source => 'puppet:///modules/pe_activemq_jolokia/jetty.xml',
