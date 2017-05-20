@@ -17,7 +17,7 @@ class pe_activemq_jolokia {
   }
 
   # Use an updated jetty.xml source that enables Jolokia
-  if (versioncmp($::facts['pe_server_version'], '2016.5.0') < 0) {
+  if (versioncmp($::facts['aio_agent_version'], '1.8') < 0) {
     file {'/etc/puppetlabs/activemq/jetty.xml':
       source => 'puppet:///modules/pe_activemq_jolokia/jetty.xml',
     }
