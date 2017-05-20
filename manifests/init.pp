@@ -9,11 +9,12 @@ class pe_activemq_jolokia {
 
   # Set up the additional configuration files Jolokia needs
   File {
-    ensure => file,
-    owner  => 'pe-activemq',
-    group  => 'pe-activemq',
-    mode   => '0600',
-    notify => Service['pe-activemq'],
+    ensure  => file,
+    owner   => 'pe-activemq',
+    group   => 'pe-activemq',
+    mode    => '0600',
+    require => Package['pe-activemq'],
+    notify  => Service['pe-activemq'],
   }
 
   # Use an updated jetty.xml source that enables Jolokia
